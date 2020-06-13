@@ -1,4 +1,16 @@
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&family=Roboto:wght@500;900&display=swap');
+
+@keyframes spin {
+    0% {
+      transform: rotateY(0deg)
+    }
+    50% {
+      transform: rotateY(90deg)
+    }
+    100%{
+      transform: rotateY(0deg)
+    }
+}
 
 * {
     margin: 0;
@@ -57,6 +69,7 @@ h1 {
     border: 5px solid #eeeddd22;
 
     cursor: pointer;
+    transition: all 1s ease;
 }
 
 .card img {
@@ -73,6 +86,7 @@ h1 {
     box-shadow: 0px 0px 15px #81e05a99;
     
     pointer-events: none;
+    animation: spin .8s linear;
 }
 
 .card.closed {
@@ -93,4 +107,67 @@ h1 {
 
 .card.closed img {
     display: none;
+}
+
+.spin {
+    animation: spin .8s linear;
+    pointer-events: none;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    background-color: #e6e3e3b1;
+}
+
+.modal.hide {
+    display: none;
+}
+
+.modal h1 {
+    margin: 0;
+    color: rgba(0, 0, 0, .8);
+    font-family: 'Roboto', sans-serif;
+    font-weight: bolder;
+    opacity: 1;
+}
+
+.modal h1 span{
+    color: #80712ef2;
+}
+
+.modal h2 {
+    color: rgba(0, 0, 0, .8);
+    font-family: 'Roboto', sans-serif;
+    font-weight: bolder;
+    font-size: 28px;
+}
+
+.modal button {
+    cursor: pointer;
+    margin-top: 20px;
+
+    border: 0;
+    border-radius: 8px;
+    padding: 15px;
+    background-color: rgba(69, 150, 87, .8);
+
+    font-family: 'Roboto', sans-serif;
+    font-size: 18px;
+    font-weight: 300;
+    color: #eee;
+}
+
+.modal button:hover {
+
+    background-color: rgb(56, 167, 81);
+    box-shadow: 0px 0px .4em rgba(69, 150, 87, .6);
 }

@@ -9,9 +9,7 @@ function shuffle(array) {
         array[j] = aux;
     }
 }
-/**
- * Embaralhando as cartas
- */
+
 const cards = [
     {
         id: 1,
@@ -29,43 +27,68 @@ const cards = [
         alt: 'Cachorro'
     }
 ]
-
 const startedCards = [];
-
-cards.forEach(card => {
-    startedCards.push(card);
-    startedCards.push(card);
-});
-
-shuffle(startedCards);
-/**
- * Renderizando cartas na tela
- */
-const cardGroup = document.querySelector('.card-group');
-
-startedCards.forEach(card => {
-    const div = document.createElement('div');
-    const img = document.createElement('img');
-    
-    img.setAttribute('src', card.url);
-    img.setAttribute('alt', card.alt);
-
-    div.appendChild(img);
-    div.classList.add('card');
-    div.classList.add('closed');
-    div.setAttribute('data-id', card.id)
-    div.addEventListener('click', selectCard);
-
-    cardGroup.appendChild(div);
-});
-
-
 const selectedCards = [];
+let round;
 
-let round = 1;
-/**
- * Selecionando carta
- */
+function newGame() {
+    const cardGroup = document.querySelector('.card-group');
+    round = 1;
+
+    if (startedCards.length > 0 || selectedCards.length > 0) {
+        while(startedCards.length > 0) {
+            startedCards.pop();
+        }
+
+        while(selectedCards.length > 0) {
+            selectedCards.pop();
+        }
+
+        const modal = document.querySelector('.modal');
+        modal.classList.add('hide');
+
+        cardGroup.innerHTML = '';
+    } 
+
+    cards.forEach(card => {
+        startedCards.push(card);
+        startedCards.push(card);
+    });
+    
+    shuffle(startedCards);
+     
+    displayCards(cardGroup);
+}
+
+newGame();
+
+function displayCards(cardGroup){
+    startedCards.forEach(card => {
+        const div = document.createElement('div');
+        const img = document.createElement('img');
+        
+        img.setAttribute('src', card.url);
+        img.setAttribute('alt', card.alt);
+    
+        div.appendChild(img);
+        div.classList.add('card');
+        div.setAttribute('data-id', card.id)
+        div.addEventListener('click', selectCard);
+    
+        cardGroup.appendChild(div);
+    });
+    
+    (() => {
+        setTimeout(() => {
+            const cards = document.querySelectorAll('.card');
+    
+        cards.forEach(card => {
+            card.classList.add('closed');
+        })
+        }, 700)
+    })()
+}
+
 function selectCard(event) {
     const card = event.target;
     const currentCardId = card.dataset.id;
@@ -73,21 +96,25 @@ function selectCard(event) {
 
     selectedCards.push({ card: currentCardId, round });
     
-    card.classList.remove('closed');
-    card.classList.add('selected');
+    card.classList.add('spin');
 
-    checkPlayOfTheRound(selectedCardOnRound, currentCardId);   
+    setTimeout(() => {
+        card.classList.remove('spin');
+        card.classList.remove('closed');
+        card.classList.add('selected');
+    
+        checkPlayOfTheRound(selectedCardOnRound, currentCardId);  
+    }, 470); 
+    
+    
 }
 
-/**
- * Validando jogada
- */
 function checkPlayOfTheRound(selectedCardOnRound, currentCardId) {
     if (selectedCardOnRound != -1) {
         const cardMatch = selectedCards[selectedCardOnRound].card === currentCardId;
 
         if (cardMatch) {
-            checkVictory();
+            checkEndGame();
         } else {
             closeUnmatchedCards();
         }
@@ -95,14 +122,15 @@ function checkPlayOfTheRound(selectedCardOnRound, currentCardId) {
     }
 }
 
-function checkVictory() {
+function checkEndGame() {
     // Verificar se ainda há cartas fechadas.
     const closedCards = document.querySelector('div.closed');
                 
     if (!closedCards) {
+        const modal = document.querySelector('.modal');
         setTimeout(function() {
-            alert("Você venceu!");
-        }, 1000);
+            modal.classList.remove('hide');
+        }, 500);
     }
     round++;
 }
